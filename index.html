@@ -55,12 +55,14 @@
 
 	   		// Create the function that will parse the CSV file, check against our criteria, and loop through the specials
 	   		var generateSpecials = function(paramCity, paramNeighborhood, paramDay) {
-		   		Papa.parse("specials-03-30-17.csv", {
+
+		   		Papa.parse("https://barcheep.netlify.app/specials-12-8-14-latest.csv", {
 					header: true,
 					download: true,
 					error: function(error) {
 						alert("Network Connection Error: Please make sure you are connected to the internet");
 						console.log("This is an error");
+						console.log(error);
 					},
 					complete: function(results) {
 						console.log("File Parsed!", results);
@@ -310,24 +312,8 @@
 		   	})
 
 
-
 		});
 		</script>
-
-		<!-- Facebook Pixel Code -->
-		<script>
-		!function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?
-		n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;
-		n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;
-		t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window,
-		document,'script','https://connect.facebook.net/en_US/fbevents.js');
-
-		fbq('init', '1773435726225622');
-		fbq('track', "PageView");</script>
-		<noscript><img height="1" width="1" style="display:none"
-		src="https://www.facebook.com/tr?id=1773435726225622&ev=PageView&noscript=1"
-		/></noscript>
-		<!-- End Facebook Pixel Code -->
 
 	</head> <!-- end head of document -->
 
@@ -459,7 +445,6 @@
 		</div>
 
 	<!-- Analytics / Tracking -->
-
 	<script>
 		(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
 		(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
@@ -469,29 +454,6 @@
 		ga('create', 'UA-40645608-1', 'auto');
 		ga('send', 'pageview');
 	</script>
-
-	<script type="text/javascript">
-		var sc_project=8863911; 
-		var sc_invisible=1; 
-		var sc_security="17a8a4cd"; 
-		var scJsHost = (("https:" == document.location.protocol) ?
-		"https://secure." : "http://www.");
-		document.write("<sc"+"ript type='text/javascript' src='" +
-		scJsHost+
-		"statcounter.com/counter/counter.js'></"+"script>");
-	</script>
-
-	<!-- Start of Async HubSpot Analytics Code -->
-	  <script type="text/javascript">
-	    (function(d,s,i,r) {
-	      if (d.getElementById(i)){return;}
-	      var n=d.createElement(s),e=d.getElementsByTagName(s)[0];
-	      n.id=i;n.src='//js.hs-analytics.net/analytics/'+(Math.ceil(new Date()/r)*r)+'/2042970.js';
-	      e.parentNode.insertBefore(n, e);
-	    })(document,"script","hs-analytics",300000);
-	  </script>
-	<!-- End of Async HubSpot Analytics Code -->
-
 
 	</body>
 
