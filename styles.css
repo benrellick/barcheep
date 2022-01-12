@@ -1,0 +1,331 @@
+html {
+	font-family: 'Open Sans', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+}
+
+/* I can probably get rid of this when I add normalize */
+body {margin: 0; background: #fff;}
+
+/* disables that flash when you click a link on an iphone */
+body * {
+-webkit-tap-highlight-color: rgba(0,0,0,0);
+}
+
+h1 {color: #fff; margin: 0 10%;}
+
+img {max-width: 100%;vertical-align: bottom;}
+a {color: #39B54A; text-decoration: none;}
+a:hover {text-decoration: underline;}
+
+header {background: #39B54A; z-index: 800; position: fixed; width: 100%; height: 45px;}
+
+div.nav {color: #fff; font-weight: bold;}
+ul.days li:hover {cursor: pointer;}
+.back-to-location {text-indent: -9999px; display: block; background-position: center; background-repeat: no-repeat; background-size: 100%; background-image: url('img/icon-back-to-location.svg'); width: 35px; height: 25px; position: absolute; top: 28px; left: 14px;}
+.logo {width: 100px; height: 30px; margin: 0 auto;}
+.logo-img { height: 45px;}
+.filter-toggle {
+    color: #fff;
+    position: absolute;
+    top: 14px;
+    right: 20px;
+    text-transform: uppercase;
+    font-weight: bold;
+    font-size: 12px;
+}
+.filter-toggle:hover {
+    text-decoration: none;
+}
+
+
+
+ul.days {
+    list-style: none inside;
+    background: #157D27;
+    color: #39B54A;
+    padding: 3% 5%;
+    float: left;
+    width: 90%;
+    margin: 0;
+    font-weight: bold;
+    box-shadow: inset 0 16px 16px -16px rgba(0,0,0,0.24),
+                inset 0 -8px 8px -8px rgba(0,0,0,0.4);
+}
+ul.days li {float: left; margin-right: 16px;}
+ul.days li.selected {color: #fff;}
+
+
+/* This is the arrow that animates */
+.days-wrap {
+    background: #eee;   
+    position:relative;
+    overflow: hidden;  
+}
+#arrow {
+    border-bottom: 1px solid #c2c2c2;
+    height: 100%;
+    position: absolute;
+    margin-left: 5%;
+}
+#arrow:before {
+    content: '';
+    display: block;
+    width: 14px;
+    height: 14px;
+    border-radius: 3px;
+    position:absolute;
+    bottom:-9px;
+    left: 12px;
+    background: #fff;
+    -webkit-transform: rotate(45deg);
+    -moz-transform: rotate(45deg);
+    -ms-transform: rotate(45deg);
+    -o-transform: rotate(45deg); 
+    transform: rotate(45deg);
+    
+    -webkit-transition: left, 0.4s;
+    -moz-transition: left, 0.4s;
+    -o-transition: left, 0.4s;
+    transition: left, 0.4s;
+}
+
+#arrow.today:before { left: 12px; }
+#arrow.mon:before { left: 52px; }
+#arrow.tue:before { left: 81px; }
+#arrow.wed:before { left: 109px; }
+#arrow.thu:before { left: 138px; }
+#arrow.fri:before { left: 163px; }
+#arrow.sat:before { left: 188px; }
+#arrow.sun:before { left: 214px; }
+
+
+
+
+
+
+
+
+
+
+
+
+
+#home {}
+#home .top h2 {
+    font-size: 16px;
+}
+#info {}
+#info .bottom {
+    padding-bottom: 5%;
+}
+#info p {
+    padding: 0 5%;
+}
+#info h2 {
+    padding: 5% 5% 0;
+}
+#info ul.full-width-list {
+    margin-bottom: 5%;
+}
+#donate {}
+#donate .bottom {
+    background: #39B54A; text-align: center; color: #fff;
+}
+#donate .bottom h2 {
+    font-family: 'Wisdom Script', 'Droid Sans', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+}
+#donate .bottom p {
+    color: #fff; font-size: 16px; padding: 0 5% 5%;
+}
+#request {}
+#request .bottom {
+    text-align: center;
+    padding: 5% 0 0 5%;
+    width: auto;
+    float: none;
+}
+#charlottesville {}
+#found {
+    width: 90%;
+    float: left;
+    padding: 0 5%;
+    border-bottom: 1px solid #ddd;
+}
+#found p {
+    text-align: center;
+    padding: 20px;
+}
+#main {
+    float: left;
+    width: 100%;
+}
+#wrapper {position: relative; display: block;}
+#wrapper.with-fixed-top {padding-top: 45px;}
+
+span.city-title {text-transform: capitalize;}
+
+.extra {
+    display: none;
+    padding-left: 17%;
+    padding-top: 10px;
+    float: left;
+    width: 83%;
+}
+.extra a {border: 1px solid #69C969; padding: 4px; border-radius: 6px; display: inline-block; margin-top: 14px;}
+.extra a:hover {background: #69C969; color: #fff; text-decoration: none;}
+.favorite .extra a:hover {background: #EA5959; border: #EA5959; border: 1px solid #EA5959;}
+
+#info, #donate, #request, #charlottesville-nav, #found, #main, header, .days-wrap {display: none;}
+
+/* New stuff... I want to just show the specials */
+#home {display: none;}
+header, #main, #found {display: block;}
+
+/* probably don't need most of this, who cares */
+.extra ul {
+    list-style: none;
+    padding: 3% 0 0;
+    font-size: 14px;
+    border-bottom: 1px solid #ddd;
+    margin: 0;
+    clear: both;
+    border: 0;
+}
+.extra ul li {display: inline; background: #F1F2F2; border: 1px solid #BCBEC0; border-radius: 4px; color: #808285; margin-right: 4px; padding: 2px 4px;}
+.special.Mon .extra ul li.Mon,
+.special.Tue .extra ul li.Tue,
+.special.Wed .extra ul li.Wed,
+.special.Thu .extra ul li.Thu,
+.special.Fri .extra ul li.Fri,
+.special.Sat .extra ul li.Sat,
+.special.Sun .extra ul li.Sun {color: #fff; background: #69C969; border: 1px solid #4E914E;}
+
+/* Homepage cities list */
+ul.full-width-list {list-style:none inside; padding-left: 0; margin: 0; width: 100%; text-align: center; float: left; background: #fff;}
+ul.full-width-list li {border-bottom: 1px solid #EFEFE4; font-size: 18px; float: left; clear: left; width: 100%;}
+ul.full-width-list li:hover {background: #FCFCF7;}
+ul.full-width-list li a {position: relative; display: block; padding: 35px; padding-left: 15%; text-align: left; color: #888;}
+ul.full-width-list li a span {color: #93938C; background: #EFEFE4; font-size: 11px; padding: 4px 8px; border-radius: 6px; font-weight: bold; position: relative; top: -4px;float: right;}
+ul.full-width-list li a span.new {color: #fff; background: #39B54A; font-size: 11px; padding: 4px 8px; border-radius: 6px; font-weight: bold; float: none; margin-left: 20px; text-transform: uppercase;}
+ul.full-width-list li a:hover {color: #666; text-decoration: none;}
+ul.full-width-list li a.add-your-city {font-style: italic;}
+ul.full-width-list span.post-icon { margin: 20px;}
+
+/* Here's the cities list on the homepage and sub main pages */
+.top {background: #39B54A; color: #fff; text-align: center; overflow: auto; -webkit-transition: all 2s ease; min-height: 45px;}
+
+.top .actionable.info, .top .donate {float: left; display: block; text-indent: -9999px; width: 25px; height: 25px; margin: 25px 20px; position: absolute;}
+.top .actionable.info {background: url('img/icon-info.svg') no-repeat center center; background-size: 100%;}
+.top .donate {background: url('img/icon-heart.svg') no-repeat center center; background-size: 100%; right: 0;}
+.top .actionable.info:hover, .top .donate:hover {opacity: 0.6;}
+.top .info-toggle.back {background: url('img/icon-back.svg') no-repeat center center;} /* what is this? Nothin' */
+
+.top img.barcheep-icon {width: 10%; margin-left: 45%; display: block; clear: both; margin-top: 45px;}
+.top h1 {font-family: 'Wisdom Script', 'Droid Sans', 'Helvetica Neue', Helvetica, Arial, sans-serif; font-size: 36px; margin: 0.4em 0 0.6em;}
+.top h2 {color: #000; opacity: 0.3;}
+
+.top.sub-main {height: 45px; overflow: hidden;}
+.top.sub-main h1 {font-size: 20px; margin-top: 25px;}
+
+.bottom {float: left; width: 100%; background: #fff;}
+
+/* ========================== Here's the inner post stuff */
+
+#main .special {
+    padding: 5%;
+    outline: 1px solid transparent;
+    border-bottom: 1px solid #ddd;
+    background: #EFEFE4;
+    color: #bbb;
+    overflow: auto;
+    font-size: 13px;
+}
+#main .special:hover {cursor: pointer;}
+#main .onnow {background: #fff; color: #444;}
+#informative-footer { padding: 5%; width: 90%; text-align: center; display: block; float: left; color: #aaa; font-size: 12px;}
+
+span.post-icon {width: 50px; height: 50px; float: left; background: #EFEFE4; display: block; border-radius: 10px; background-position: center; background-repeat: no-repeat;} /* border: 1px solid #D1D0B8; */
+span.post-icon.food {background-image: url('img/icon-food.svg');}
+span.post-icon.drink {background-image: url('img/icon-drink.svg');}
+span.post-icon.city {background-image: url('img/icon-city.svg'); background-size: 80%;}
+span.post-icon.neighborhood {background-image: url('img/icon-neighborhood.svg'); background-size: 80%;}
+span.post-icon.plus {background-image: url('img/icon-plus.svg');}
+span.post-icon.onecoin {background-image: url('img/icon-onecoin.svg'); background-size: 80%;}
+span.post-icon.twocoin {background-image: url('img/icon-twocoin.svg'); background-size: 80%;}
+span.post-icon.facebook {background-image: url('img/icon-facebook.svg'); background-size: 80%;}
+span.post-icon.twitter {background-image: url('img/icon-twitter.svg'); background-size: 60%;}
+span.post-icon.email {background-image: url('img/icon-email.svg'); background-size: 65%;}
+
+
+/* and this is fixing some typography differences with the webapp and this version */
+#info h2 {font-size: 18px; font-weight: 600; color: #222;}
+#info p {color: #555;}
+
+
+.special h2 /*special text*/ {margin: 0; font-weight: normal; font-size: 16px; margin-bottom: 5px;}
+.onnow h3.time {color: #39B54A; font-weight: bold;}
+div.special-details {margin-left: 65px;} /* width: 85%; margin-left: 5%; float: left; but this only works with 10% width icon */
+h3.bar, h3.time { color: #777; display: inline; margin: 5px 0 0; font-size: 12px; font-weight: normal;}
+h3.time {float: right;}
+h3.bar a {color: #999;}
+h3.bar:before {content: url('img/icon-location.svg'); position: relative; top: 2px; margin-right: 4px;}
+h3.time a { color: #39B54A;}
+h3.time {color: #999; font-size: 12px; margin: 2px 0 0; font-weight: normal;}
+
+/* Favorite toggle stuff */
+#main .special.favorite:before {
+    content: "\2605";
+    color: #fff;
+    position: absolute;
+    display: block;
+    width: 30px;
+    padding: 3px 0;
+    background: #39B54A;
+    border-radius: 50%;
+    left: 12px;
+    text-align: center;
+}
+
+
+/* ===== F = O = N = T = S */
+@font-face {
+    font-family: 'Wisdom Script';
+    src: url('fonts/wisdom_script-webfont.eot');
+    src: url('fonts/wisdom_script-webfont.eot?#iefix') format('embedded-opentype'),
+         url('fonts/wisdom_script-webfont.woff') format('woff'),
+         url('fonts/wisdom_script-webfont.ttf') format('truetype'),
+         url('fonts/wisdom_script-webfont.svg#wisdom_script') format('svg');
+    font-weight: normal;
+    font-style: normal;
+}
+@font-face {
+    font-family: 'Open Sans';
+    src: url('fonts/opensans-regular-webfont.eot');
+    src: url('fonts/opensans-regular-webfont.eot?#iefix') format('embedded-opentype'),
+         url('fonts/opensans-regular-webfont.woff') format('woff'),
+         url('fonts/opensans-regular-webfont.ttf') format('truetype'),
+         url('fonts/opensans-regular-webfont.svg#opensans-regular') format('svg');
+    font-weight: normal;
+    font-style: normal;
+}
+
+/* =============== RESPONSIVENESS */
+@media only screen and (min-width:768px) {
+
+	html {background: url('img/barcheep-pattern.png');}
+	body {width: 50%; margin: 4% 25%; float: left; padding-bottom: 10px; border-radius: 10px; box-shadow: 0 0 20px rgba(0,0,0,0.14);}
+	header {position: relative; border-top-right-radius: 8px; border-top-left-radius: 8px;} /* 8px instead of 10px to hide white line */
+	#wrapper {padding-top: 0;}
+
+	/* the ones down here have not been screened yet */
+	/* when header isn't fixed, you don't need to top padding*/
+	.top {border-top-right-radius: 8px; border-top-left-radius: 8px;}
+	.post-inner {padding: 4% 5%;}
+	.request .bottom {padding: 10% 22%;}
+	#wrapper.with-fixed-top {padding-top: 0;}
+}
+
+/* ========== */
+
+::selection { background:#39B54A; color:#FFF; text-shadow:none;}
+::-webkit-selection { background:#39B54A; color:#FFF; text-shadow:none;}
+::-moz-selection { background:#39B54A; color:#FFF; text-shadow:none;}

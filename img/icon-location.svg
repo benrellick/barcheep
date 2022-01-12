@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Generator: Adobe Illustrator 15.0.0, SVG Export Plug-In  -->
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd" [
+	<!ENTITY ns_flows "http://ns.adobe.com/Flows/1.0/">
+]>
+<svg version="1.1"
+	 xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:a="http://ns.adobe.com/AdobeSVGViewerExtensions/3.0/"
+	 x="0px" y="0px" width="9px" height="13px" viewBox="11.279 44.749 9 13"
+	 overflow="visible" enable-background="new 11.279 44.749 9 13" xml:space="preserve">
+<defs>
+</defs>
+<rect y="1.357" fill-rule="evenodd" clip-rule="evenodd" fill="none" width="322" height="84"/>
+<text transform="matrix(1 0 0 1 0 11.9971)" font-family="'OpenSans'" font-size="14">New wordpress site for each</text>
+<path fill="#808285" d="M15.661,44.749c-2.42,0-4.382,1.962-4.382,4.383c0,1.048,0.369,2.013,0.985,2.768
+	c0.802,0.984,3.396,6.157,3.396,6.157s2.603-5.177,3.405-6.168c0.609-0.752,0.976-1.712,0.976-2.756
+	C20.042,46.711,18.082,44.749,15.661,44.749z M15.661,50.753c-0.851,0-1.541-0.69-1.541-1.542c0-0.85,0.69-1.542,1.541-1.542
+	s1.542,0.691,1.542,1.542C17.203,50.063,16.512,50.753,15.661,50.753z"/>
+</svg>

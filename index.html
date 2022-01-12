@@ -1,0 +1,498 @@
+<!DOCTYPE html>
+	<head>
+		<meta charset="utf-8">
+
+		<title>BarCheep</title>
+
+		<!--[if lt IE 9]>
+			<script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+		<![endif]-->
+
+		<!-- yo (this is a test, I'm just gonna leave it in there) -->
+
+		<!-- icons -->
+		<link href="img/icons/favicon.ico" rel="shortcut icon">
+		<link rel="icon" sizes="144x144" href="img/apple-touch-144x144.png">
+		<link rel="apple-touch-icon-precomposed" sizes="144x144" href="img/apple-touch-144x144.png" />
+
+		<!-- CSS -->
+		<link rel="stylesheet" type="text/css" href="styles.css">
+
+		<!-- JS -->
+		<script src="js/jquery-1.11.1.min.js"></script>
+		<script src="js/papaparse.min.js"></script>
+		<script src="js/analytics.js"></script>
+
+		<!-- MOBILE: viewport stuff -->
+		<meta name="HandheldFriendly" content="True">
+		<meta name="MobileOptimized" content="320">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, minimal-ui">
+		<!-- iOS -->
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black">
+		<meta name="apple-touch-fullscreen" content="yes">
+		<link rel="apple-touch-startup-image" href="img/splash.png">
+
+		<script type="text/javascript">
+		//prevents links from opening in new window when in homescreen safari
+		       $(function() {
+		         $('a').click(function() {
+		           document.location = $(this).attr('href');
+		           return false;
+		         });
+		       });
+	   </script>
+
+	   <script>
+	   // This is the main code for the application
+	   $(document).ready(function(){
+
+	   		// Define the standard settings
+	   		city = 'harrisonburg';
+	   		neighborhood = '';
+	   		day = 'today';
+
+	   		// Create the function that will parse the CSV file, check against our criteria, and loop through the specials
+	   		var generateSpecials = function(paramCity, paramNeighborhood, paramDay) {
+		   		Papa.parse("specials-03-30-17.csv", {
+					header: true,
+					download: true,
+					error: function(error) {
+						alert("Network Connection Error: Please make sure you are connected to the internet");
+						console.log("This is an error");
+					},
+					complete: function(results) {
+						console.log("File Parsed!", results);
+
+						// define some empty variables
+				    	singleSpecial = [];
+				    	found = [];
+				    	decimalTimeLeft = [];
+				    	displayTimeLeft = [];
+				    	plural = [];
+				    	displayNeighborhood = [];
+
+				    	// set displayNeighborhood variable
+				    	if (neighborhood != '') {
+				    		displayNeighborhood = ': '+neighborhood+''
+				    	}
+
+				    	// Set default "no specials" message each time generate Specials is run
+						foundWrite = '<p> Unfortunately there are 0 specials going on '+day+' in '+city+''+displayNeighborhood+'</p>';
+						$("#found").html(foundWrite);
+
+				    	// If the day is set to "today", then put the current time in a decimal format
+				    		actualDate = new Date($.now());
+				    		hours = actualDate.getHours();
+				    		decimalMinutes = (actualDate.getMinutes() / 60 );
+				    		time = (hours+decimalMinutes);
+				    		console.log("decimal time is:", time);
+  
+
+				    	// If the day is set to "today", associate that with the 3 letter weekday name
+					    	var dayName = new Array(7);
+							dayName[0]=  "Sun";
+							dayName[1] = "Mon";
+							dayName[2] = "Tue";
+							dayName[3] = "Wed";
+							dayName[4] = "Thu";
+							dayName[5] = "Fri";
+							dayName[6] = "Sat";
+
+							var currentDay = dayName[actualDate.getDay()];
+							console.log("Day name is:", currentDay);
+
+				    	// run our loop
+				    	for (var i = 0; i < results.data.length; i++) {
+				    		if (
+				    			// logic
+				    			paramCity == results.data[i].city && (
+				    				paramNeighborhood == '' ||
+				    				paramNeighborhood == results.data[i].neighborhood
+				    			) && (
+				    				(paramDay == 'today' && results.data[i].csv_post_tags.indexOf(currentDay) >= 0 && results.data[i].end_time > time) ||
+				    				results.data[i].csv_post_tags.indexOf(paramDay) >= 0 ||
+				    				paramDay == 'all'
+				    			)
+				    		) {
+				    			// Remove the commas from the tags so we can add them as classes to div.special
+				    			tags = results.data[i].csv_post_tags.replace(/,/g, '');
+
+				    			// Check to see if special is on now and how many hours are left
+				    			if ((paramDay == 'today' || (currentDay == paramDay)) && results.data[i].start_time <= time && results.data[i].end_time > time) {
+				    				singleSpecial += '<div class="special onnow ' +tags+'">'
+				    				decimalTimeLeft = (results.data[i].end_time - time); // in decimal form
+				    				displayTimeLeft = Math.round(decimalTimeLeft)+' hours left'
+				    				if (decimalTimeLeft < 1) {
+				    					displayTimeLeft = Math.round((decimalTimeLeft * 60) % 60)+' minutes left'
+				    				}
+				    			};
+				    			if ((results.data[i].start_time < time && results.data[i].end_time >= time && (paramDay !== currentDay) && (paramDay !== 'today'))  || results.data[i].start_time > time || results.data[i].end_time < time ) {
+				    				singleSpecial += '<div class="special '+tags+'">'
+				    			}	    			
+
+				    			// Format decimal START time to 12:34 PM format (this is kind of a repeat of 20 lines up). Should be a function but it's returning undefined, so I'm just going to go with the 10 extra lines and repeat it
+				    			hoursStart = Math.floor(results.data[i].start_time);
+				    			minutesStart = Math.round((results.data[i].start_time * 60) % 60);
+				    			if (hoursStart == 0 || hoursStart == 24) {
+				    				hoursStart = 12;
+				    			}
+				    			if (minutesStart < 10) {
+				    				minutesStart = '0'+minutesStart;
+				    			}
+				    			displayStart = hoursStart+':'+minutesStart+' AM'
+				    			if (minutesStart == 0) {
+				    				displayStart = hoursStart+' AM'
+				    			}
+				    			if (hoursStart > 12) {
+				    				hoursStart = (hoursStart - 12);
+				    				displayStart = hoursStart+':'+minutesStart+' PM' // overrides previous variable
+				    				if (minutesStart == 0) {
+					    				displayStart = hoursStart+' PM'
+					    			}
+				    			}
+
+				    			// Format decimal END time to 12:34 PM format
+				    			hoursEnd = Math.floor(results.data[i].end_time);
+				    			minutesEnd = Math.round((results.data[i].end_time * 60) % 60);
+				    			if (hoursEnd == 0 || hoursEnd == 24) {
+				    				hoursEnd = 12;
+				    			}
+				    			if (minutesEnd < 10) {
+				    				minutesEnd = '0'+minutesEnd;
+				    			}
+				    			displayEnd = hoursEnd+':'+minutesEnd+' AM'
+				    			if (minutesEnd == 0) {
+				    				displayEnd = hoursEnd+' AM'
+				    			}
+				    			if (hoursEnd > 12) {
+				    				hoursEnd = (hoursEnd - 12);
+				    				displayEnd = hoursEnd+':'+minutesEnd+' PM' // overrides previous variable
+				    				if (minutesEnd == 0) {
+					    				displayEnd = hoursEnd+' PM'
+					    			}
+				    			}
+
+					    		// writes the details
+					    		singleSpecial += '<span class="post-icon '+results.data[i].type+'"></span>'
+
+					    					  + '<div class="special-details"><h2>'+results.data[i].csv_post_title+'</h2>'
+					    					  + '<h3 class="bar">'+results.data[i].csv_post_categories+'</h3>'
+					    					  + '<h3 class="time">'+displayStart+' - '+displayEnd+'</p></div>'
+
+					    					  // + '<p>'+displayTimeLeft+'</p>' 
+					    					  // + '<p>Days: '+results.data[i].csv_post_tags+'</p>'
+					    					  + '<div class="extra">'
+					    					  + '<span>Days this special is active:</span>'
+					    					  + '<ul>'
+					    					  +	'<li class="Mon">M</li>'
+					    					  +	'<li class="Tue">T</li>'
+					    					  +	'<li class="Wed">W</li>'
+					    					  +	'<li class="Thu">T</li>'
+					    					  +	'<li class="Fri">F</li>'
+					    					  +	'<li class="Sat">S</li>'
+					    					  +	'<li class="Sun">S</li>'
+					    					  + '</ul>'
+					    					  + '</div>'
+					    					  + '</div>'
+					    		// pushes results to those found, writes the length
+					    		found.push(results);
+					    		if (found.length > 1) {
+					    			plural = 's';
+					    		};
+					    		foundWrite = '<p>We found '+found.length+' special'+plural+' for '+day+' in <span class="city-title">'+results.data[i].city+''+displayNeighborhood+'</span></p>';
+								$("#found").html(foundWrite);
+					    	};
+				    	};
+				    	//After the loop, inject the html from singleSpecial into the DOM
+				    	$("#main").hide().html(singleSpecial).fadeIn('slow');
+
+					} // closes out for complete
+				});
+		   	};
+
+		   	var showSpecials = function() {
+		   		generateSpecials(city, neighborhood, day);
+		   	};
+
+		   	// We used to load the specials on the first page load, now we wait until you choose your city
+		   	showSpecials();
+
+			// First show that extra info
+			$("#main").on('click','.special',function() {
+				if (!$(this).children('.extra').hasClass('selected')) {
+					$('.extra').slideUp('fast').removeClass('selected');
+					$(this).children('.extra').slideDown('fast').addClass('selected');
+				}
+				else {
+					$('.extra').slideUp('fast').removeClass('selected');
+				}
+			});
+
+		   	// Here's where we control the navigation
+		   	$('.actionable').click(function() {
+		   		$('.page-section').hide();
+		   		$('#wrapper').removeClass('with-fixed-top');
+		   		$('header').hide();
+		   	});
+
+		   	// ===== harrisonburg
+			$('.actionable.generates-specials.harrisonburg').click(function(e) {
+				city = 'harrisonburg';
+				neighborhood = '';
+		   	});
+
+		   	$('.actionable.generates-specials').click(function(e) {
+		   		$('header').show();
+		   		$('#found').show();
+		   		$('.days').show();
+		   		$('#wrapper').addClass('with-fixed-top');
+				e.preventDefault();
+				showSpecials();
+		   	});
+		   	// Back button
+		   	$('.actionable.back-to-location').click(function(e) {
+				$('#home').show();
+				$('#home .bottom').hide().fadeIn('slow');
+		   	});
+		   	// Days
+		   	$('.today').click(function(e) {
+				day = 'today';
+				$('#arrow').removeClass().addClass('today');
+		   	});
+		   	$('.mon').click(function(e) {
+				day = 'Mon';
+				$('#arrow').removeClass().addClass('mon');
+		   	});
+		   	$('.tue').click(function(e) {
+				day = 'Tue';
+				$('#arrow').removeClass().addClass('tue');
+		   	});
+		   	$('.wed').click(function(e) {
+				day = 'Wed';
+				$('#arrow').removeClass().addClass('wed');
+		   	});
+		   	$('.thu').click(function(e) {
+				day = 'Thu';
+				$('#arrow').removeClass().addClass('thu');
+		   	});
+		   	$('.fri').click(function(e) {
+				day = 'Fri';
+				$('#arrow').removeClass().addClass('fri');
+		   	});
+		   	$('.sat').click(function(e) {
+				day = 'Sat';
+				$('#arrow').removeClass().addClass('sat');
+		   	});
+		   	$('.sun').click(function(e) {
+				day = 'Sun';
+				$('#arrow').removeClass().addClass('sun');
+		   	});
+		   	// prevents default and runs that show special thing
+		   	$('.days-wrap ul.days li').click(function(e) {
+		   		$('ul.days li').removeClass('selected');
+		   		$(this).addClass('selected');
+		   		e.preventDefault();
+		   		showSpecials();
+		   	});
+		   	// Filter toggle
+		   	$('.filter-toggle').click(function(e){
+		   		e.preventDefault();
+		   		if(!$(this).hasClass('filter-open')) {
+		   			$(this).addClass('filter-open').text('Filter ^');
+		   			$('.days-wrap').slideDown();
+		   		}
+		   		else {
+		   			$(this).removeClass('filter-open').text('Filter >');
+		   			$('.days-wrap').slideUp();
+		   		}
+		   	})
+
+
+
+		});
+		</script>
+
+		<!-- Facebook Pixel Code -->
+		<script>
+		!function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+		n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;
+		n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;
+		t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window,
+		document,'script','https://connect.facebook.net/en_US/fbevents.js');
+
+		fbq('init', '1773435726225622');
+		fbq('track', "PageView");</script>
+		<noscript><img height="1" width="1" style="display:none"
+		src="https://www.facebook.com/tr?id=1773435726225622&ev=PageView&noscript=1"
+		/></noscript>
+		<!-- End Facebook Pixel Code -->
+
+	</head> <!-- end head of document -->
+
+	<body>	
+
+		<header> <!-- only appears on the pages that display specials -->
+			<div class="logo">
+				<a href="#">
+					<img src="img/logo-text.svg" class="logo-img" />
+				</a>
+			</div>
+			<!-- <a href="#" class="actionable back-to-location">back</a> -->
+			<a href="#" class="filter-toggle">Filter ></a>
+		</header>
+
+		<div id="wrapper" class="with-fixed-top">
+
+			<!-- ======================================================================= the homepage -->
+			<div id="home" class="page-section">
+				<div class="top">
+					<a href="#" class="actionable info">info</a>
+					<a onclick="window.open('https://plasso.co/s/G3lC3c3Qdx', '_system', 'location=no');" href="#" class="donate">donate</a>
+					<img src="img/icon-logo.svg" class="barcheep-icon" />
+					<h1>BarCheep</h1>
+					<h2>Find happy hour specials in...</h2>
+				</div>
+				<div class="bottom">
+					<ul class="full-width-list">
+						<li>
+							<span class="post-icon city"></span>
+							<a href="#" class="actionable generates-specials harrisonburg">Harrisonburg, VA</a>
+						</li>
+						<li>
+							<span class="post-icon city"></span>
+							<a href="#" class="actionable charlottesville-nav">Charlottesville, VA</a>
+						</li>
+						<li>
+							<span class="post-icon plus"></span>
+							<a href="#" class="actionable request">Request a City</a>
+						</li>
+					</ul>
+				</div>
+			</div>
+
+			<!-- ======================================================================= Info/about/contact page -->
+			<div id="info" class="page-section">
+				<div class="top sub-main">
+					<a href="#" class="actionable back-to-location">back</a>
+				</div>
+				<div class="bottom">
+					<h2>BarCheep is a beautifully simple way to find happy hour specials happening now.</h2>
+					<p>A feed of the current Happy Hour drink specials in Harrisonburg, VA. I made this back in 2013 to consolidate Harrisonburg's happy hour specials for me and my friends. BarCheep exists because Virginia bars aren't allowed to directly advertise happy hour specials thanks to some archaic alcohol laws. This is a fun way to get around that law.</p>
+					<p>I tried to make this app as simple as possible so that we're not all sitting at the bar with screens illuminating our faces all night (seriously, we've gotta stop that mess). It's ad-free and donation based, so if you find it useful and would like to help me make a bit of a living, I've got this <a onclick="window.open('https://plasso.co/s/G3lC3c3Qdx', '_system', 'location=no');" href="#">Pay-What-You-Will, Cancel-Anytime Donation/Subscription&#153</a> and would appreciate any contribution so much! Thanks, and enjoy!!</p>
+
+					<p style="font-style: italic;">Specials last updated: 12/8/14 at 8:06 PM</p>
+
+					<ul class="full-width-list">
+						<li>
+							<span class="post-icon facebook"></span>
+							<a onclick="window.open('http://www.facebook.com/538207356223231', '_system', 'location=no');" href="">Like BarCheep on Facebook!</a>
+						</li>
+						<li>
+							<span class="post-icon twitter"></span>
+							<a onclick="window.open('http://www.twitter.com/barcheep', '_system', 'location=no');" href="">Follow BarCheep!</a>
+						</li>
+						<li>
+							<span class="post-icon email"></span>
+							<a onclick="window.open('mailto:barcheep@gmail.com', '_system', 'location=no');" href="">Email Me!</a>
+						</li>
+					</ul><!-- /.full-width-list -->
+
+					<p>Made by <a onclick="window.open('http://www.benrellick.com', '_system', 'location=no');" href="">Ben Rellick</a></p>
+				</div>
+			</div>
+
+			<!-- ======================================================================= Request a city -->
+			<div id="request" class="page-section">
+				<div class="top sub-main">
+					<a href="#" class="actionable back-to-location">back</a>
+				</div>
+				<div class="bottom">
+					<script type="text/javascript" charset="utf-8" src="http://static.polldaddy.com/p/8171351.js"></script>
+					<noscript><a href="http://polldaddy.com/poll/8171351/">Where would you most like to see BarCheep next?</a></noscript>
+				</div>
+			</div>
+
+			<!-- ======================================================================= charlottesville nav page -->
+			<div id="charlottesville-nav" class="page-section">
+				<div class="top sub-main">
+					<a href="#" class="actionable back-to-location">back</a>
+					<h1>Charlottesville</h1>
+				</div>
+				<div class="bottom">
+					<ul class="full-width-list">
+						<li>
+							<span class="post-icon city"></span>
+							<a href="#" class="actionable generates-specials charlottesville">All</a>
+						</li>
+						<li>
+							<span class="post-icon neighborhood"></span>
+							<a href="#" class="actionable generates-specials charlottesville corner">Corner</a>
+						</li>
+						<li>
+							<span class="post-icon neighborhood"></span>
+							<a href="#" class="actionable generates-specials charlottesville downtown">Downtown</a>
+						</li>
+					</li>
+				</div>
+			</div>
+
+			<!-- ======================================================================= Here's where the main content appears -->
+			<div class="days-wrap">
+				<ul class="days page-section">
+					<li class="today selected">Now</li>
+					<li class="mon">M</li>
+					<li class="tue">T</li>
+					<li class="wed">W</li>
+					<li class="thu">T</li>
+					<li class="fri">F</li>
+					<li class="sat">S</li>
+					<li class="sun">S</li>
+				</ul>
+				<div id="arrow"></div>
+			</div>
+			<div id="found" class="page-section"></div>
+			<div id="main" class="page-section"></div>
+			<div id="informative-footer"><a href="https://plasso.co/s/G3lC3c3Qdx" target="_blank">💚 Leave a tip</a> | <a href="mailto:barcheep@gmail.com">Contact</a> | Updated: 3-30-17 | 🍺</div>
+
+		</div>
+
+	<!-- Analytics / Tracking -->
+
+	<script>
+		(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+		(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+		m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+		})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+		ga('create', 'UA-40645608-1', 'auto');
+		ga('send', 'pageview');
+	</script>
+
+	<script type="text/javascript">
+		var sc_project=8863911; 
+		var sc_invisible=1; 
+		var sc_security="17a8a4cd"; 
+		var scJsHost = (("https:" == document.location.protocol) ?
+		"https://secure." : "http://www.");
+		document.write("<sc"+"ript type='text/javascript' src='" +
+		scJsHost+
+		"statcounter.com/counter/counter.js'></"+"script>");
+	</script>
+
+	<!-- Start of Async HubSpot Analytics Code -->
+	  <script type="text/javascript">
+	    (function(d,s,i,r) {
+	      if (d.getElementById(i)){return;}
+	      var n=d.createElement(s),e=d.getElementsByTagName(s)[0];
+	      n.id=i;n.src='//js.hs-analytics.net/analytics/'+(Math.ceil(new Date()/r)*r)+'/2042970.js';
+	      e.parentNode.insertBefore(n, e);
+	    })(document,"script","hs-analytics",300000);
+	  </script>
+	<!-- End of Async HubSpot Analytics Code -->
+
+
+	</body>
+
+</html>
