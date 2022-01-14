@@ -56,11 +56,11 @@
 	   		// Create the function that will parse the CSV file, check against our criteria, and loop through the specials
 	   		var generateSpecials = function(paramCity, paramNeighborhood, paramDay) {
 
-		   		Papa.parse("https://barcheep.netlify.app/barcheep-specials-1-11-22-latest.csv", {
+		   		Papa.parse("https://barcheep.com/barcheep-specials-1-11-22-latest.csv", {
 					header: true,
 					download: true,
 					error: function(error) {
-						alert("Network Connection Error: Please make sure you are connected to the internet");
+						alert("Something went wrong :(");
 						console.log(error);
 					},
 					complete: function(results) {
